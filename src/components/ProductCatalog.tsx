@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import Image from 'next/image'
+import { useCart } from '../context/CartContext'
 
 // Define prop types for the component
 interface ProductCatalogProps {
@@ -12,11 +13,12 @@ interface ProductCatalogProps {
 export default function ProductCatalog({ initialProducts, categories }: ProductCatalogProps) {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('All')
+  const { addToCart } = useCart()
 
   // Filter products based on search term and selected category
   const filteredProducts = initialProducts.filter((product) => {
     const matchesSearch = product.title.toLowerCase().includes(searchTerm.toLowerCase())
-    
+
     // Check if the product's category matches the selected category
     const productCategoryName = typeof product.category === 'object' ? product.category?.name : ''
     const matchesCategory = selectedCategory === 'All' || productCategoryName === selectedCategory
@@ -55,13 +57,12 @@ export default function ProductCatalog({ initialProducts, categories }: ProductC
       {/* Product Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {filteredProducts.map((product) => {
-          const imageUrl = typeof product.image === 'object' && product.image?.url 
-            ? product.image.url 
-            : '' 
+          const imageUrl =
+            typeof product.image === 'object' && product.image?.url ? product.image.url : ''
 
           return (
-            <div 
-              key={product.id} 
+            <div
+              key={product.id}
               className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
             >
               <div className="relative h-48 w-full bg-gray-200 flex items-center justify-center">
@@ -82,15 +83,14 @@ export default function ProductCatalog({ initialProducts, categories }: ProductC
                 <h2 className="text-lg font-semibold text-gray-800 line-clamp-1">
                   {product.title}
                 </h2>
-                <p className="text-gray-500 text-sm mt-1 line-clamp-2">
-                  {product.description}
-                </p>
-                
+                <p className="text-gray-500 text-sm mt-1 line-clamp-2">{product.description}</p>
+
                 <div className="mt-4 flex items-center justify-between">
-                  <span className="text-xl font-bold text-blue-600">
-                    Rs. {product.price}
-                  </span>
-                  <button className="bg-black text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors">
+                  <span className="text-xl font-bold text-blue-600">Rs. {product.price}</span>
+                  <button
+                    onClick={() => addToCart(product)}
+                    className="bg-black text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors"
+                  >
                     Add to Cart
                   </button>
                 </div>

@@ -1,18 +1,22 @@
 import React from 'react'
 import './styles.css'
+import { CartProvider } from '../../context/CartContext'
+import Header from '../../components/Header'
 
 export const metadata = {
-  description: 'A blank template using Payload in a Next.js app.',
-  title: 'Payload Blank Template',
+  title: 'E-Commerce Store',
+  description: 'Built with Payload CMS and Next.js',
 }
 
-export default async function RootLayout(props: { children: React.ReactNode }) {
-  const { children } = props
-
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body>
-        <main>{children}</main>
+        {/* Wrap the entire app with the Cart Provider */}
+        <CartProvider>
+          <Header />
+          {children}
+        </CartProvider>
       </body>
     </html>
   )
