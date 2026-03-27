@@ -123,6 +123,11 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: number;
+  role: 'admin' | 'user';
+  name?: string | null;
+  phoneNumber?: string | null;
+  address?: string | null;
+  profileImageURL?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -148,6 +153,9 @@ export interface User {
  */
 export interface Media {
   id: number;
+  /**
+   * Alternative text for the image (used for SEO and accessibility).
+   */
   alt: string;
   updatedAt: string;
   createdAt: string;
@@ -240,6 +248,11 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  role?: T;
+  name?: T;
+  phoneNumber?: T;
+  address?: T;
+  profileImageURL?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;

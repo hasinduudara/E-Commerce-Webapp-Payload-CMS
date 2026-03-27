@@ -5,9 +5,41 @@ export const Users: CollectionConfig = {
   admin: {
     useAsTitle: 'email',
   },
+  // Enable Payload's built-in authentication (Email & Password)
   auth: true,
   fields: [
-    // Email added by default
-    // Add more fields as needed
+    // Role-based Access Control (Admin or User)
+    {
+      name: 'role',
+      type: 'select',
+      options: [
+        { label: 'Admin', value: 'admin' },
+        { label: 'User', value: 'user' },
+      ],
+      defaultValue: 'user',
+      required: true,
+      access: {
+        // Only admins can change roles
+        update: ({ req: { user } }) => (user as any)?.role === 'admin',
+      },
+    },
+    // Personal Information
+    {
+      name: 'name',
+      type: 'text',
+    },
+    {
+      name: 'phoneNumber',
+      type: 'text',
+    },
+    {
+      name: 'address',
+      type: 'textarea',
+    },
+    // Profile Image (We will link this to an Upload collection later)
+    {
+      name: 'profileImageURL',
+      type: 'text',
+    },
   ],
 }
