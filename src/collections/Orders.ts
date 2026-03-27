@@ -5,6 +5,7 @@ export const Orders: CollectionConfig = {
   admin: {
     useAsTitle: 'id',
     description: 'A summary of all orders placed on the store.',
+    defaultColumns: ['id', 'customerName', 'totalAmount', 'paymentMethod', 'paymentStatus', 'orderStatus'],
   },
   access: {
     // Only admins can read all orders. Users should only read their own (simplified for now)
