@@ -19,6 +19,7 @@ interface CartContextType {
   cart: CartItem[]
   addToCart: (product: Product) => void
   removeFromCart: (productId: string) => void
+  clearCart: () => void 
   cartTotal: number
   cartCount: number
 }
@@ -55,7 +56,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
       return [...prevCart, { product, quantity: 1 }]
     })
-    alert(`${product.title} added to cart!`) // Simple notification
+    alert(`${product.title} added to cart!`)
   }
 
   // Remove item from cart completely
@@ -63,12 +64,18 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setCart((prevCart) => prevCart.filter((item) => item.product.id !== productId))
   }
 
+  // 2. Clear the entire cart
+  const clearCart = () => {
+    setCart([])
+  }
+
   // Calculate totals
   const cartTotal = cart.reduce((total, item) => total + item.product.price * item.quantity, 0)
   const cartCount = cart.reduce((count, item) => count + item.quantity, 0)
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart, cartTotal, cartCount }}>
+    // 3. Wrap children with CartContext.Provider and pass down the cart state and functions
+    <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart, cartTotal, cartCount }}>
       {children}
     </CartContext.Provider>
   )
