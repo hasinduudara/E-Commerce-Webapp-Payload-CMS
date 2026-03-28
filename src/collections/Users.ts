@@ -7,6 +7,18 @@ export const Users: CollectionConfig = {
   },
   // Enable Payload's built-in authentication (Email & Password)
   auth: true,
+  
+  // Access Control: Allow anyone to read user data, but only allow users to update their own data
+  access: {
+    read: () => true,
+    update: ({ req: { user } }) => {
+      if (user) {
+        return { id: { equals: user.id } } // Only allow users to update their own data based on their ID
+      }
+      return false
+    },
+  },
+
   fields: [
     // Role-based Access Control (Admin or User)
     {
@@ -34,11 +46,39 @@ export const Users: CollectionConfig = {
     },
     {
       name: 'address',
-      type: 'textarea',
+      type: 'group', 
+      fields: [
+        {
+          name: 'street',
+          type: 'text',
+          label: 'Street Address',
+        },
+        {
+          name: 'city',
+          type: 'text',
+          label: 'City',
+        },
+        {
+          name: 'state',
+          type: 'text',
+          label: 'State / Province',
+        },
+        {
+          name: 'postalCode',
+          type: 'text',
+          label: 'Postal Code',
+        },
+        {
+          name: 'country',
+          type: 'text',
+          label: 'Country',
+          defaultValue: 'Sri Lanka', 
+        },
+      ],
     },
-    // Profile Image (We will link this to an Upload collection later)
+    // Profile Image Link from Imgbb
     {
-      name: 'profileImageURL',
+      name: 'profileImageURL', 
       type: 'text',
     },
   ],

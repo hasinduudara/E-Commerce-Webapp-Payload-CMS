@@ -8,7 +8,15 @@ interface User {
   email: string
   name?: string
   phoneNumber?: string
-  address?: string
+  role?: 'admin' | 'user' 
+  profileImageURL?: string 
+  address?: {
+    street?: string
+    city?: string
+    state?: string
+    postalCode?: string
+    country?: string
+  }
 }
 
 interface AuthContextType {
