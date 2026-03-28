@@ -34,15 +34,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Fetch the currently logged-in user from Payload CMS
     const fetchUser = async () => {
       try {
-        const res = await fetch('/api/users/me')
+        const res = await fetch(`/api/users/me?t=${new Date().getTime()}`, { 
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+          }
+        })
+
         if (res.ok) {
           const data = await res.json()
           if (data.user) {
             setUser(data.user)
+          } else {
+            setUser(null) 
           }
+        } else {
+          setUser(null)
         }
       } catch (error) {
         console.error("Failed to fetch user session", error)
+        setUser(null)
       } finally {
         setIsLoading(false)
       }

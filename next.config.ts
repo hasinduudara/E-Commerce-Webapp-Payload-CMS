@@ -7,6 +7,23 @@ const __filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(__filename)
 
 const nextConfig: NextConfig = {
+  // Admin Login/Logout Redirects
+  async redirects() {
+    return [
+      {
+        source: '/admin/logout', 
+        destination: '/login',        
+        permanent: false,
+      },
+      {
+        source: '/admin/login',  
+        destination: '/login',   
+        permanent: false,
+      },
+    ]
+  },
+
+  // Image Configurations
   images: {
     localPatterns: [
       {
@@ -19,8 +36,14 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'images.unsplash.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'i.ibb.co', 
+      },
     ],
   },
+
+  // Webpack Configurations
   webpack: (webpackConfig) => {
     webpackConfig.resolve.extensionAlias = {
       '.cjs': ['.cts', '.cjs'],
@@ -30,6 +53,8 @@ const nextConfig: NextConfig = {
 
     return webpackConfig
   },
+
+  // Turbopack Configurations
   turbopack: {
     root: path.resolve(dirname),
   },

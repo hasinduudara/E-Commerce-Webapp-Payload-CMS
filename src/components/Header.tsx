@@ -17,6 +17,7 @@ export default function Header() {
   return (
     <header className="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-4 flex justify-between items-center text-black">
+        
         <Link href="/" className="text-2xl font-bold text-gray-900 hover:text-blue-600 transition">
           E-Store
         </Link>
@@ -36,14 +37,11 @@ export default function Header() {
             </Link>
           )}
 
-          {/* Profile Icon / Image */}
           {user ? (
             <Link href="/profile" className="relative w-11 h-11 bg-gray-50 rounded-full hover:bg-gray-100 transition border border-gray-200 group overflow-hidden flex items-center justify-center shadow-sm hover:shadow-md">
               {user.profileImageURL ? (
-                // User has a profile image, display it
                 <Image src={user.profileImageURL} alt="Profile" fill unoptimized className="object-cover" />
               ) : (
-                // Default profile icon
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-gray-800 group-hover:text-blue-600 transition-colors">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                 </svg>

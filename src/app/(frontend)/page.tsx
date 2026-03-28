@@ -1,23 +1,12 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation' // <-- අලුතින් එකතු කළා
 import { useAuth } from '../../context/AuthContext'
 
 export default function HomePage() {
   const { user, isLoading } = useAuth()
-  const router = useRouter() 
-
-  
-  useEffect(() => {
-    if (!isLoading && user) {
-      router.push('/products')
-    }
-  }, [user, isLoading, router])
-
-  if (user) return null 
 
   return (
     <main className="min-h-screen bg-stone-50 font-sans selection:bg-blue-200 selection:text-blue-900 overflow-x-hidden">
@@ -66,7 +55,18 @@ export default function HomePage() {
           <div className="animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
             {isLoading ? (
               <div className="h-14 w-40 bg-gray-200 animate-pulse rounded-xl mx-auto"></div>
+            ) : user ? (
+              // ලොග් වෙලා ඉන්නවා නම් "Go to Products" කියලා පෙන්වනවා
+              <div className="flex justify-center"> 
+                <Link
+                  href="/products"
+                  className="inline-flex items-center justify-center px-12 py-4 font-bold text-white transition-all duration-200 bg-blue-600 rounded-xl hover:bg-blue-700 focus:outline-none shadow-lg hover:shadow-blue-500/30 hover:-translate-y-1"
+                >
+                  Go to Products
+                </Link>
+              </div>
             ) : (
+              // ලොග් වෙලා නැත්නම් "Log In" කියලා පෙන්වනවා
               <div className="flex justify-center"> 
                 <Link
                   href="/login"
