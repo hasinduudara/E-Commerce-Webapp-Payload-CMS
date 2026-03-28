@@ -24,8 +24,18 @@ export default function LoginPage() {
       })
 
       if (res.ok) {
-        // Refresh the page to update the AuthContext and redirect to home
-        window.location.href = '/'
+        // 1. get user data from response
+        const data = await res.json()
+        
+        // 2. Check user role 
+        if (data?.user?.role === 'admin') {
+          // Admin user --> Admin dashboard
+          window.location.href = '/admin' 
+        } else {
+          // Normal user --> Home page 
+          window.location.href = '/'
+        }
+        
       } else {
         setError('Invalid email or password.')
       }
@@ -42,7 +52,7 @@ export default function LoginPage() {
         <h2 className="text-3xl font-bold text-center text-gray-900 mb-2">Welcome Back</h2>
         <p className="text-center text-gray-500 mb-8">Sign in to your account to continue</p>
 
-        {error && <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-4 text-sm text-center">{error}</div>}
+        {error && <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-4 text-sm text-center font-medium">{error}</div>}
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
@@ -57,7 +67,7 @@ export default function LoginPage() {
             <input required type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="••••••••" />
           </div>
 
-          <button type="submit" disabled={loading} className="w-full bg-black text-white p-3 rounded-lg font-bold hover:bg-gray-800 transition mt-4 disabled:bg-gray-400">
+          <button type="submit" disabled={loading} className="w-full bg-blue-600 text-white p-3 rounded-lg font-bold hover:bg-blue-700 transition mt-6 disabled:bg-gray-400">
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
