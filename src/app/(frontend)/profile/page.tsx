@@ -10,7 +10,6 @@ export default function ProfilePage() {
   const router = useRouter()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // Address එකේ අලුත් fields ටික State එකට එකතු කළා
   const [formData, setFormData] = useState({
     name: '',
     phoneNumber: '',
@@ -35,7 +34,6 @@ export default function ProfilePage() {
         name: user.name || '',
         phoneNumber: user.phoneNumber || '',
         email: user.email || '',
-        // අලුත් Address fields ටික Load කරනවා
         street: user.address?.street || '',
         city: user.address?.city || '',
         state: user.address?.state || '',
@@ -58,6 +56,19 @@ export default function ProfilePage() {
       const file = e.target.files[0]
       setSelectedFile(file)
       setProfilePhotoPreview(URL.createObjectURL(file))
+    }
+  }
+
+  // Logout Function 
+  const handleLogout = async () => {
+    try {
+      // Payload CMS එකේ Default Logout Endpoint 
+      await fetch('/api/users/logout', { method: 'POST' })
+      // Navigate to home page after logout
+      window.location.href = '/'
+    } catch (error) {
+      console.error('Logout failed', error)
+      setMessage('Failed to log out. Please try again.')
     }
   }
 
@@ -92,9 +103,9 @@ export default function ProfilePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: formData.name,
+          email: formData.email, 
           phoneNumber: formData.phoneNumber,
           profileImageURL: currentPhotoUrl,
-          // Address එක Group එකක් විදියට යවනවා
           address: {
             street: formData.street,
             city: formData.city,
@@ -105,7 +116,7 @@ export default function ProfilePage() {
         }),
       })
 
-      if (!updateRes.ok) throw new Error('Profile update failed')
+      if (!updateRes.ok) throw new Error('Profile update failed (Email might already be in use)')
       
       setMessage('Profile updated successfully!')
       setSelectedFile(null)
@@ -114,9 +125,9 @@ export default function ProfilePage() {
         window.location.reload()
       }, 1500)
 
-    } catch (error) {
+    } catch (error: any) {
       console.error(error)
-      setMessage('An error occurred. Please try again.')
+      setMessage(error.message || 'An error occurred. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -127,7 +138,18 @@ export default function ProfilePage() {
   return (
     <main className="min-h-screen bg-stone-50 p-4 md:p-8 text-black font-sans">
       <div className="max-w-3xl mx-auto bg-white p-6 md:p-10 rounded-3xl shadow-sm border border-gray-100 animate-fade-in-up">
-        <h1 className="text-3xl font-extrabold mb-8 text-gray-900 tracking-tight">Edit Profile</h1>
+        
+        {/* Header and Logout Button */}
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Edit Profile</h1>
+          <button 
+            onClick={handleLogout} 
+            type="button"
+            className="px-5 py-2.5 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 hover:text-red-700 font-bold transition duration-200 border border-red-100"
+          >
+            Log Out
+          </button>
+        </div>
         
         {message && (
           <div className={`p-4 rounded-xl mb-6 text-sm font-medium ${message.includes('successfully') ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
@@ -137,7 +159,7 @@ export default function ProfilePage() {
 
         <form onSubmit={handleSubmit} className="space-y-8">
           
-          <div className="flex flex-col items-center gap-4 bg-gray-50 p-6 rounded-2xl">
+          <div className="flex flex-col items-center gap-4 bg-gray-50 p-6 rounded-2xl border border-gray-100">
             <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-md bg-white">
               {profilePhotoPreview ? (
                 <Image src={profilePhotoPreview} alt="Profile Photo" fill unoptimized className="object-cover" />
@@ -148,8 +170,8 @@ export default function ProfilePage() {
               )}
             </div>
             <input required={false} type="file" accept="image/*" ref={fileInputRef} onChange={handleFileChange} className="hidden" />
-            <button type="button" onClick={() => fileInputRef.current?.click()} className="text-sm font-medium text-blue-600 hover:text-blue-800 transition px-4 py-2 bg-blue-50 rounded-lg">
-              Change Profile Photo
+            <button type="button" onClick={() => fileInputRef.current?.click()} className="text-sm font-bold text-gray-700 hover:text-black transition px-5 py-2.5 bg-white border border-gray-200 shadow-sm rounded-xl">
+              Change Photo
             </button>
           </div>
 
@@ -162,7 +184,8 @@ export default function ProfilePage() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                <input required type="email" name="email" value={formData.email} readOnly className="w-full p-3 bg-gray-100 border border-gray-200 rounded-xl text-gray-500 cursor-not-allowed" />
+                {/* Email එක වෙනස් කරන්න පුළුවන් විදියට හැදුවා */}
+                <input required type="email" name="email" value={formData.email} onChange={handleChange} className="w-full p-3 bg-stone-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white transition" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
@@ -171,7 +194,7 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* අලුත් Address Section එක */}
+          {/* Shipping Address */}
           <div className="space-y-6">
             <h2 className="text-xl font-bold text-gray-800 border-b pb-2">Shipping Address</h2>
             
@@ -201,7 +224,7 @@ export default function ProfilePage() {
           </div>
 
           <div className="pt-6">
-            <button type="submit" disabled={loading} className="w-full bg-blue-600 text-white p-4 rounded-xl font-bold hover:bg-blue-700 transition disabled:bg-gray-400 shadow-md hover:shadow-lg hover:-translate-y-0.5">
+            <button type="submit" disabled={loading} className="w-full bg-black text-white p-4 rounded-xl font-bold hover:bg-gray-800 transition disabled:bg-gray-400 shadow-md hover:shadow-lg hover:-translate-y-0.5">
               {loading ? 'Saving Changes...' : 'Save Profile'}
             </button>
           </div>
