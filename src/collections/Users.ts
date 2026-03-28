@@ -10,6 +10,7 @@ export const Users: CollectionConfig = {
   
   // Access Control: Allow anyone to read user data, but only allow users to update their own data
   access: {
+    create: () => true,
     read: () => true,
     update: ({ req: { user } }) => {
       if (user) {

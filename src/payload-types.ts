@@ -132,7 +132,13 @@ export interface User {
   role: 'admin' | 'user';
   name?: string | null;
   phoneNumber?: string | null;
-  address?: string | null;
+  address?: {
+    street?: string | null;
+    city?: string | null;
+    state?: string | null;
+    postalCode?: string | null;
+    country?: string | null;
+  };
   profileImageURL?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -319,7 +325,15 @@ export interface UsersSelect<T extends boolean = true> {
   role?: T;
   name?: T;
   phoneNumber?: T;
-  address?: T;
+  address?:
+    | T
+    | {
+        street?: T;
+        city?: T;
+        state?: T;
+        postalCode?: T;
+        country?: T;
+      };
   profileImageURL?: T;
   updatedAt?: T;
   createdAt?: T;
