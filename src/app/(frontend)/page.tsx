@@ -1,16 +1,27 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation' // <-- අලුතින් එකතු කළා
 import { useAuth } from '../../context/AuthContext'
 
 export default function HomePage() {
   const { user, isLoading } = useAuth()
+  const router = useRouter() 
+
+  
+  useEffect(() => {
+    if (!isLoading && user) {
+      router.push('/products')
+    }
+  }, [user, isLoading, router])
+
+  if (user) return null 
 
   return (
     <main className="min-h-screen bg-stone-50 font-sans selection:bg-blue-200 selection:text-blue-900 overflow-x-hidden">
-      {/* 1. Hero Section (Image Background + Overlay) */}
+      {/* 1. Hero Section */}
       <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
         {/* Hero Background Image */}
         <Image
@@ -55,32 +66,6 @@ export default function HomePage() {
           <div className="animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
             {isLoading ? (
               <div className="h-14 w-40 bg-gray-200 animate-pulse rounded-xl mx-auto"></div>
-            ) : user ? (
-              <div className="flex flex-col items-center bg-white/70 backdrop-blur-sm p-6 rounded-2xl border border-gray-100 max-w-sm mx-auto shadow-sm">
-                <p className="text-gray-800 mb-4 font-medium">
-                  Welcome back,{' '}
-                  <span className="text-blue-600 font-bold">{user.name || 'User'}</span>!
-                </p>
-                <Link
-                  href="/products"
-                  className="group relative inline-flex items-center justify-center px-8 py-3.5 font-bold text-white transition-all duration-200 bg-blue-600 rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 overflow-hidden shadow-lg hover:shadow-blue-500/30 hover:-translate-y-1"
-                >
-                  <span className="mr-2">Explore Catalog</span>
-                  <svg
-                    className="w-5 h-5 transition-transform group-hover:translate-x-1"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M14 5l7 7m0 0l-7 7m7-7H3"
-                    ></path>
-                  </svg>
-                </Link>
-              </div>
             ) : (
               <div className="flex justify-center"> 
                 <Link
