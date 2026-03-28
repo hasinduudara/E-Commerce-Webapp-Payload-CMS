@@ -7,14 +7,8 @@ const __filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(__filename)
 
 const nextConfig: NextConfig = {
-  // Admin Login/Logout Redirects
   async redirects() {
     return [
-      {
-        source: '/admin/logout', 
-        destination: '/login',        
-        permanent: false,
-      },
       {
         source: '/admin/login',  
         destination: '/login',   
