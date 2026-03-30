@@ -11,10 +11,10 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-stone-50 font-sans selection:bg-blue-200 selection:text-blue-900 overflow-x-hidden">
       {/* 1. Hero Section */}
-      <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
+      <section className="relative z-0 pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
         {/* Hero Background Image */}
         <Image
-          src="/welcom-bg.jpg"
+          src="/welcome-bg.jpg"
           alt="Hero Background"
           fill
           unoptimized 
