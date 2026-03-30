@@ -10,23 +10,27 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen bg-stone-50 font-sans selection:bg-blue-200 selection:text-blue-900 overflow-x-hidden">
+      
       {/* 1. Hero Section */}
-      <section className="relative z-0 pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
-        {/* Hero Background Image */}
+      <section className="relative z-0 pt-32 pb-20 md:pt-40 md:pb-40 overflow-hidden min-h-[80vh] flex items-center">
+        
+        {/* Hero Background Image - Right */}
         <Image
           src="/welcome-bg.jpg"
           alt="Hero Background"
           fill
           unoptimized 
-          className="object-cover -z-20 transition-transform duration-[10s] animate-ken-burns"
+          className="object-cover object-[75%_center] -z-20 transition-transform duration-[10s] animate-ken-burns"
           priority
         />
 
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-white/85 md:bg-white/80 -z-10"></div>
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-stone-50 from-10% via-stone-50/80 via-40% to-transparent to-70% -z-10"></div>
 
-        <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10 flex flex-col items-center text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-stone-50 shadow-sm border border-gray-100 text-sm font-medium text-blue-600 mb-8 animate-fade-in-up">
+        {/* Content */}
+        <div className="max-w-7xl w-full mx-auto px-6 md:px-12 relative z-10 flex flex-col items-start text-left">
+          
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm shadow-sm border border-gray-100 text-sm font-medium text-blue-600 mb-8 animate-fade-in-up">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
@@ -35,42 +39,40 @@ export default function HomePage() {
           </div>
 
           <h1
-            className="text-5xl md:text-7xl font-extrabold tracking-tight text-gray-900 mb-6 animate-fade-in-up"
+            className="text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight text-gray-900 mb-6 animate-fade-in-up max-w-3xl leading-tight"
             style={{ animationDelay: '0.1s' }}
           >
-            Elevate Your Lifestyle with <br className="hidden md:block" />
+            Elevate Your <br /> Lifestyle with <br className="hidden md:block" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
               E-Store
             </span>
           </h1>
 
           <p
-            className="text-lg md:text-xl text-gray-700 max-w-2xl mb-12 animate-fade-in-up font-medium"
+            className="text-lg md:text-xl text-gray-700 max-w-lg mb-10 animate-fade-in-up font-medium leading-relaxed"
             style={{ animationDelay: '0.2s' }}
           >
             Discover a curated collection of premium tech, fashion, and lifestyle essentials.
             Quality meets affordability, delivered straight to your door.
           </p>
 
-          <div className="animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+          <div className="animate-fade-in-up w-full sm:w-auto" style={{ animationDelay: '0.3s' }}>
             {isLoading ? (
-              <div className="h-14 w-40 bg-gray-200 animate-pulse rounded-xl mx-auto"></div>
+              <div className="h-14 w-40 bg-gray-200 animate-pulse rounded-xl"></div>
             ) : user ? (
-              // ලොග් වෙලා ඉන්නවා නම් "Go to Products" කියලා පෙන්වනවා
-              <div className="flex justify-center"> 
+              <div className="flex justify-start"> 
                 <Link
                   href="/products"
-                  className="inline-flex items-center justify-center px-12 py-4 font-bold text-white transition-all duration-200 bg-blue-600 rounded-xl hover:bg-blue-700 focus:outline-none shadow-lg hover:shadow-blue-500/30 hover:-translate-y-1"
+                  className="inline-flex items-center justify-center px-10 py-4 font-bold text-white transition-all duration-200 bg-blue-600 rounded-xl hover:bg-blue-700 focus:outline-none shadow-lg hover:shadow-blue-500/30 hover:-translate-y-1 w-full sm:w-auto"
                 >
                   Go to Products
                 </Link>
               </div>
             ) : (
-              // ලොග් වෙලා නැත්නම් "Log In" කියලා පෙන්වනවා
-              <div className="flex justify-center"> 
+              <div className="flex justify-start"> 
                 <Link
                   href="/login"
-                  className="inline-flex items-center justify-center px-12 py-4 font-bold text-white transition-all duration-200 bg-black rounded-xl hover:bg-blue-700 focus:outline-none shadow-lg hover:shadow-blue-500/30 hover:-translate-y-1"
+                  className="inline-flex items-center justify-center px-12 py-4 font-bold text-white transition-all duration-200 bg-black rounded-xl hover:bg-gray-800 focus:outline-none shadow-lg hover:shadow-black/30 hover:-translate-y-1 w-full sm:w-auto"
                 >
                   Log In
                 </Link>
