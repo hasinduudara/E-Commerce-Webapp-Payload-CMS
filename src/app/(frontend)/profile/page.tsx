@@ -62,9 +62,7 @@ export default function ProfilePage() {
   // Logout Function 
   const handleLogout = async () => {
     try {
-      // Payload CMS එකේ Default Logout Endpoint 
       await fetch('/api/users/logout', { method: 'POST' })
-      // Navigate to home page after logout
       window.location.href = '/'
     } catch (error) {
       console.error('Logout failed', error)
@@ -133,98 +131,120 @@ export default function ProfilePage() {
     }
   }
 
-  if (authLoading || !user) return <div className="min-h-screen bg-stone-50 p-8 flex justify-center items-center text-black">Loading...</div>
+  // Premium Loading State
+  if (authLoading || !user) return (
+    <div className="min-h-screen bg-stone-50 flex justify-center items-center font-sans">
+      <div className="flex flex-col items-center gap-4 animate-pulse">
+        <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+        <p className="text-gray-500 font-medium">Loading profile...</p>
+      </div>
+    </div>
+  )
 
   return (
-    <main className="min-h-screen bg-stone-50 p-4 md:p-8 text-black font-sans">
-      <div className="max-w-3xl mx-auto bg-white p-6 md:p-10 rounded-3xl shadow-sm border border-gray-100 animate-fade-in-up">
+    <main className="min-h-screen bg-stone-50 pt-10 pb-20 px-6 font-sans selection:bg-blue-200 selection:text-blue-900">
+      
+      <div className="max-w-4xl mx-auto bg-white rounded-[2.5rem] shadow-xl shadow-gray-200/50 p-8 md:p-12 border border-gray-100 animate-fade-in-up">
         
         {/* Header and Logout Button */}
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Edit Profile</h1>
+        <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start gap-6 mb-10">
+          <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">My Profile</h1>
           <button 
             onClick={handleLogout} 
             type="button"
-            className="px-5 py-2.5 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 hover:text-red-700 font-bold transition duration-200 border border-red-100"
+            className="group flex items-center gap-2 px-6 py-3 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 hover:text-red-700 font-bold transition duration-300"
           >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 group-hover:-translate-x-1 transition-transform">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+            </svg>
             Log Out
           </button>
         </div>
         
+        {/* Success/Error Message */}
         {message && (
-          <div className={`p-4 rounded-xl mb-6 text-sm font-medium ${message.includes('successfully') ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+          <div className={`p-4 rounded-xl mb-8 text-sm font-bold text-center border ${message.includes('successfully') ? 'bg-green-50 text-green-700 border-green-100' : 'bg-red-50 text-red-700 border-red-100'}`}>
             {message}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-8">
+        <form onSubmit={handleSubmit} className="space-y-10">
           
-          <div className="flex flex-col items-center gap-4 bg-gray-50 p-6 rounded-2xl border border-gray-100">
-            <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-md bg-white">
+          {/* Profile Photo Section - Clean & Centered */}
+          <div className="flex flex-col items-center gap-5 bg-stone-50/50 p-8 rounded-[2rem] border border-gray-100">
+            <div className="relative w-36 h-36 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-100">
               {profilePhotoPreview ? (
                 <Image src={profilePhotoPreview} alt="Profile Photo" fill unoptimized className="object-cover" />
               ) : (
-                <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400">
+                <div className="w-full h-full flex items-center justify-center text-gray-300">
                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="w-16 h-16"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
                 </div>
               )}
             </div>
             <input required={false} type="file" accept="image/*" ref={fileInputRef} onChange={handleFileChange} className="hidden" />
-            <button type="button" onClick={() => fileInputRef.current?.click()} className="text-sm font-bold text-gray-700 hover:text-black transition px-5 py-2.5 bg-white border border-gray-200 shadow-sm rounded-xl">
+            <button 
+              type="button" 
+              onClick={() => fileInputRef.current?.click()} 
+              className="text-sm font-bold text-gray-700 hover:text-black hover:bg-gray-50 transition-all px-6 py-3 bg-white border border-gray-200 shadow-sm rounded-xl hover:shadow-md"
+            >
               Change Photo
             </button>
           </div>
 
+          {/* Personal Information */}
           <div className="space-y-6">
-            <h2 className="text-xl font-bold text-gray-800 border-b pb-2">Personal Information</h2>
+            <h2 className="text-2xl font-bold text-gray-900 tracking-tight">Personal Information</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                <input required type="text" name="name" value={formData.name} onChange={handleChange} className="w-full p-3 bg-stone-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white transition" />
+                <label className="block text-sm font-bold text-gray-700 mb-2">Full Name</label>
+                <input required type="text" name="name" value={formData.name} onChange={handleChange} className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all outline-none bg-stone-50 focus:bg-white text-gray-900" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                {/* Email එක වෙනස් කරන්න පුළුවන් විදියට හැදුවා */}
-                <input required type="email" name="email" value={formData.email} onChange={handleChange} className="w-full p-3 bg-stone-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white transition" />
+                <label className="block text-sm font-bold text-gray-700 mb-2">Email Address</label>
+                <input required type="email" name="email" value={formData.email} onChange={handleChange} className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all outline-none bg-stone-50 focus:bg-white text-gray-900" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                <input required={false} type="tel" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} className="w-full p-3 bg-stone-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white transition" placeholder="07X XXX XXXX" />
+                <label className="block text-sm font-bold text-gray-700 mb-2">Phone Number</label>
+                <input required={false} type="tel" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all outline-none bg-stone-50 focus:bg-white text-gray-900" placeholder="07X XXX XXXX" />
               </div>
             </div>
           </div>
 
           {/* Shipping Address */}
-          <div className="space-y-6">
-            <h2 className="text-xl font-bold text-gray-800 border-b pb-2">Shipping Address</h2>
+          <div className="space-y-6 pt-4">
+            <h2 className="text-2xl font-bold text-gray-900 tracking-tight">Shipping Address</h2>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Street Address</label>
-              <input required={false} type="text" name="street" value={formData.street} onChange={handleChange} className="w-full p-3 bg-stone-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white transition" placeholder="No. 123, Main Street" />
+              <label className="block text-sm font-bold text-gray-700 mb-2">Street Address</label>
+              <input required={false} type="text" name="street" value={formData.street} onChange={handleChange} className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all outline-none bg-stone-50 focus:bg-white text-gray-900" placeholder="No. 123, Main Street" />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
-                <input required={false} type="text" name="city" value={formData.city} onChange={handleChange} className="w-full p-3 bg-stone-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white transition" placeholder="Colombo" />
+                <label className="block text-sm font-bold text-gray-700 mb-2">City</label>
+                <input required={false} type="text" name="city" value={formData.city} onChange={handleChange} className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all outline-none bg-stone-50 focus:bg-white text-gray-900" placeholder="Colombo" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">State / Province</label>
-                <input required={false} type="text" name="state" value={formData.state} onChange={handleChange} className="w-full p-3 bg-stone-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white transition" placeholder="Western Province" />
+                <label className="block text-sm font-bold text-gray-700 mb-2">State / Province</label>
+                <input required={false} type="text" name="state" value={formData.state} onChange={handleChange} className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all outline-none bg-stone-50 focus:bg-white text-gray-900" placeholder="Western Province" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Postal Code</label>
-                <input required={false} type="text" name="postalCode" value={formData.postalCode} onChange={handleChange} className="w-full p-3 bg-stone-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white transition" placeholder="00100" />
+                <label className="block text-sm font-bold text-gray-700 mb-2">Postal Code</label>
+                <input required={false} type="text" name="postalCode" value={formData.postalCode} onChange={handleChange} className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all outline-none bg-stone-50 focus:bg-white text-gray-900" placeholder="00100" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
-                <input required={false} type="text" name="country" value={formData.country} onChange={handleChange} className="w-full p-3 bg-stone-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white transition" />
+                <label className="block text-sm font-bold text-gray-700 mb-2">Country</label>
+                <input required={false} type="text" name="country" value={formData.country} onChange={handleChange} className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all outline-none bg-stone-50 focus:bg-white text-gray-900" />
               </div>
             </div>
           </div>
 
-          <div className="pt-6">
-            <button type="submit" disabled={loading} className="w-full bg-black text-white p-4 rounded-xl font-bold hover:bg-gray-800 transition disabled:bg-gray-400 shadow-md hover:shadow-lg hover:-translate-y-0.5">
+          <div className="pt-8 mt-8 border-t border-gray-100 flex justify-end">
+            <button 
+              type="submit" 
+              disabled={loading} 
+              className="w-full md:w-auto bg-black text-white px-10 py-4 rounded-xl font-bold text-lg hover:bg-gray-900 transition-all shadow-lg hover:shadow-black/20 hover:-translate-y-1 disabled:bg-gray-400 disabled:shadow-none disabled:transform-none"
+            >
               {loading ? 'Saving Changes...' : 'Save Profile'}
             </button>
           </div>
