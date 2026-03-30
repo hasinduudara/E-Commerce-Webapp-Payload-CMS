@@ -17,7 +17,7 @@ export default function OrderSuccessPage() {
           We will contact you shortly to confirm the delivery.
         </p>
         <Link 
-          href="/" 
+          href="/products" 
           className="bg-black text-white px-8 py-3 rounded-lg font-medium hover:bg-gray-800 transition block w-full"
         >
           Continue Shopping
