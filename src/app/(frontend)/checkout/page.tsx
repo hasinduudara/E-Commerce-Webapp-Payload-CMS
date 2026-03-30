@@ -2,12 +2,12 @@
 
 import React, { useState, useEffect } from 'react'
 import { useCart } from '../../../context/CartContext'
-import { useAuth } from '../../../context/AuthContext' // Import Auth
+import { useAuth } from '../../../context/AuthContext' 
 import { useRouter } from 'next/navigation'
 
 export default function CheckoutPage() {
   const { cart, cartTotal, clearCart } = useCart()
-  const { user } = useAuth() // Get current user
+  const { user } = useAuth() 
   const router = useRouter()
   
   const [loading, setLoading] = useState(false)
@@ -21,11 +21,28 @@ export default function CheckoutPage() {
   // Auto-fill form if user is logged in
   useEffect(() => {
     if (user) {
+      
+      // Format the address by filtering out empty parts and joining with commas
+      let formattedAddress = ''
+      if (user.address) {
+        const addr = user.address
+        // Filter out empty parts and join with commas
+        formattedAddress = [
+          addr.street, 
+          addr.city, 
+          addr.state, 
+          addr.postalCode, 
+          addr.country
+        ].filter(Boolean).join(', ') 
+        
+        // Eg: "No 1, Main Street, Galle, Southern Province, 004132, Sri Lanka"
+      }
+
       setFormData({
         name: user.name || '',
         email: user.email || '',
         phone: user.phoneNumber || '',
-        address: user.address || '',
+        address: formattedAddress, // The formatted address
       })
     }
   }, [user])
@@ -79,7 +96,7 @@ export default function CheckoutPage() {
   }
 
   if (cart.length === 0) {
-    return <div className="p-8 text-center mt-20 text-xl">Your cart is empty. Please add items to checkout.</div>
+    return <div className="p-8 text-center mt-20 text-xl text-black">Your cart is empty. Please add items to checkout.</div>
   }
 
   return (
@@ -92,7 +109,7 @@ export default function CheckoutPage() {
           
           {/* Show a small message if logged in */}
           {user && (
-            <div className="mb-4 p-3 bg-blue-50 text-blue-700 rounded-lg text-sm">
+            <div className="mb-4 p-3 bg-blue-50 text-blue-700 rounded-lg text-sm border border-blue-100">
               Logged in as <strong>{user.email}</strong>. Your details have been auto-filled.
             </div>
           )}
@@ -119,7 +136,7 @@ export default function CheckoutPage() {
               <button 
                 type="submit" 
                 disabled={loading}
-                className="w-full bg-black text-white p-4 rounded-lg font-bold text-lg hover:bg-gray-800 disabled:bg-gray-400 transition"
+                className="w-full bg-blue-600 text-white p-4 rounded-lg font-bold text-lg hover:bg-blue-700 disabled:bg-gray-400 transition shadow-sm"
               >
                 {loading ? 'Processing...' : 'Place Order (Cash on Delivery)'}
               </button>
@@ -128,12 +145,12 @@ export default function CheckoutPage() {
         </div>
 
         {/* Order Summary */}
-        <div className="bg-white p-6 rounded-xl shadow-sm h-fit">
+        <div className="bg-white p-6 rounded-xl shadow-sm h-fit sticky top-24">
           <h2 className="text-2xl font-bold mb-6 text-gray-900">Order Summary</h2>
-          <ul className="divide-y divide-gray-200 mb-4">
+          <ul className="divide-y divide-gray-100 mb-4">
             {cart.map((item) => (
               <li key={item.product.id} className="py-3 flex justify-between">
-                <span className="text-gray-600">{item.product.title} <span className="text-sm font-bold">x{item.quantity}</span></span>
+                <span className="text-gray-600">{item.product.title} <span className="text-sm font-bold ml-1 text-gray-900">x{item.quantity}</span></span>
                 <span className="font-medium text-gray-900">Rs. {item.product.price * item.quantity}</span>
               </li>
             ))}
