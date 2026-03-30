@@ -10,6 +10,86 @@ interface ProductCatalogProps {
   categories: any[]
 }
 
+// 1. ProductCard Component - Represents each product in the catalog
+const ProductCard = ({ product, addToCart }: { product: any; addToCart: any }) => {
+  // Quantity state for each product card
+  const [quantity, setQuantity] = useState(1)
+
+  const imageUrl = typeof product.image === 'object' && product.image?.url ? product.image.url : ''
+
+  const increase = () => setQuantity((prev) => prev + 1)
+  const decrease = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1))
+
+  const handleAddToCart = () => {
+    // Pass the selected quantity to the addToCart function
+    addToCart(product, quantity)
+    // Reset quantity to 1 after adding to cart
+    setQuantity(1)
+  }
+
+  return (
+    <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col">
+      <div className="relative h-48 w-full bg-gray-200 flex items-center justify-center">
+        {imageUrl ? (
+          <Image
+            src={imageUrl}
+            alt={product.title}
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          />
+        ) : (
+          <span className="text-gray-400">No Image</span>
+        )}
+      </div>
+
+      <div className="p-4 flex flex-col flex-1">
+        <h2 className="text-lg font-semibold text-gray-800 line-clamp-1">
+          {product.title}
+        </h2>
+        <p className="text-gray-500 text-sm mt-1 line-clamp-2">{product.description}</p>
+
+        {/* Price and Add to Cart */}
+        <div className="mt-auto pt-4 flex flex-col gap-3">
+          <span className="text-xl font-bold text-blue-600">Rs. {product.price}</span>
+          
+          {/* Quantity Selector and Add to Cart Button */}
+          <div className="flex items-center justify-between gap-2">
+            
+            {/* + / - Button */}
+            <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden bg-white">
+              <button 
+                onClick={decrease} 
+                className="px-3 py-1.5 bg-gray-50 text-gray-700 hover:bg-gray-200 font-bold transition focus:outline-none"
+              >
+                -
+              </button>
+              <span className="px-3 py-1.5 text-sm font-bold text-gray-900 min-w-[2.5rem] text-center">
+                {quantity}
+              </span>
+              <button 
+                onClick={increase} 
+                className="px-3 py-1.5 bg-gray-50 text-gray-700 hover:bg-gray-200 font-bold transition focus:outline-none"
+              >
+                +
+              </button>
+            </div>
+            
+            {/* Add to Cart Button */}
+            <button
+              onClick={handleAddToCart}
+              className="flex-1 bg-black text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors whitespace-nowrap"
+            >
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// 2. Main ProductCatalog Component
 export default function ProductCatalog({ initialProducts, categories }: ProductCatalogProps) {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('All')
@@ -56,48 +136,9 @@ export default function ProductCatalog({ initialProducts, categories }: ProductC
 
       {/* Product Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {filteredProducts.map((product) => {
-          const imageUrl =
-            typeof product.image === 'object' && product.image?.url ? product.image.url : ''
-
-          return (
-            <div
-              key={product.id}
-              className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
-            >
-              <div className="relative h-48 w-full bg-gray-200 flex items-center justify-center">
-                {imageUrl ? (
-                  <Image
-                    src={imageUrl}
-                    alt={product.title}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                ) : (
-                  <span className="text-gray-400">No Image</span>
-                )}
-              </div>
-
-              <div className="p-4">
-                <h2 className="text-lg font-semibold text-gray-800 line-clamp-1">
-                  {product.title}
-                </h2>
-                <p className="text-gray-500 text-sm mt-1 line-clamp-2">{product.description}</p>
-
-                <div className="mt-4 flex items-center justify-between">
-                  <span className="text-xl font-bold text-blue-600">Rs. {product.price}</span>
-                  <button
-                    onClick={() => addToCart(product)}
-                    className="bg-black text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors"
-                  >
-                    Add to Cart
-                  </button>
-                </div>
-              </div>
-            </div>
-          )
-        })}
+        {filteredProducts.map((product) => (
+          <ProductCard key={product.id} product={product} addToCart={addToCart} />
+        ))}
       </div>
 
       {/* Empty State for Filters */}
