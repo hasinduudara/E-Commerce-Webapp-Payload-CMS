@@ -1,64 +1,102 @@
 'use client'
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('')
-  const [message, setMessage] = useState('')
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [errorMessage, setErrorMessage] = useState('')
 
-  const handleForgot = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true)
-    setError('')
-    setMessage('')
+    setStatus('loading')
 
     try {
       const res = await fetch('/api/users/forgot-password', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ email }),
       })
 
       if (res.ok) {
-        setMessage('If an account with that email exists, we have sent a password reset link.')
+        setStatus('success')
       } else {
-        setError('Failed to send reset email. Please try again.')
+        const data = await res.json()
+        setErrorMessage(data.errors?.[0]?.message || 'Something went wrong. Please try again.')
+        setStatus('error')
       }
-    } catch (err) {
-      setError('Something went wrong. Please try again.')
-    } finally {
-      setLoading(false)
+    } catch (error) {
+      setErrorMessage('Network error. Please try again.')
+      setStatus('error')
     }
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-sm p-8 text-black">
-        <h2 className="text-3xl font-bold text-center text-gray-900 mb-2">Reset Password</h2>
-        <p className="text-center text-gray-500 mb-8">Enter your email and we'll send you a reset link.</p>
+    <div className="min-h-screen bg-stone-50 flex items-center justify-center px-4 py-12">
+      <div className="max-w-md w-full bg-white rounded-3xl shadow-sm border border-stone-100 p-8">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold text-stone-900 mb-2">Forgot Password?</h2>
+          <p className="text-stone-500">
+            Enter your email address and we'll send you a link to reset your password.
+          </p>
+        </div>
 
-        {error && <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-4 text-sm text-center">{error}</div>}
-        {message && <div className="bg-green-50 text-green-700 p-3 rounded-lg mb-4 text-sm text-center">{message}</div>}
-
-        {!message && (
-          <form onSubmit={handleForgot} className="space-y-4">
+        {status === 'success' ? (
+          <div className="text-center">
+            <div className="bg-green-50 text-green-700 p-4 rounded-2xl mb-6">
+              Check your email for a link to reset your password. If it doesn’t appear within a few minutes, check your spam folder.
+            </div>
+            <Link 
+              href="/login"
+              className="inline-block text-stone-900 font-medium hover:underline"
+            >
+              Return to Login
+            </Link>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-              <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="you@example.com" />
+              <label htmlFor="email" className="block text-sm font-medium text-stone-700 mb-2">
+                Email Address
+              </label>
+              <input
+                id="email"
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-stone-900 focus:border-transparent transition-all"
+                placeholder="you@example.com"
+              />
             </div>
 
-            <button type="submit" disabled={loading} className="w-full bg-black text-white p-3 rounded-lg font-bold hover:bg-gray-800 transition mt-4 disabled:bg-gray-400">
-              {loading ? 'Sending...' : 'Send Reset Link'}
+            {status === 'error' && (
+              <div className="text-red-500 text-sm text-center">
+                {errorMessage}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={status === 'loading'}
+              className="w-full bg-stone-900 text-white py-3 px-4 rounded-xl font-medium hover:bg-stone-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {status === 'loading' ? 'Sending...' : 'Send Reset Link'}
             </button>
+
+            <div className="text-center mt-6">
+              <Link 
+                href="/login"
+                className="text-sm text-stone-500 hover:text-stone-900 transition-colors"
+              >
+                Remember your password? Login here
+              </Link>
+            </div>
           </form>
         )}
-
-        <div className="text-center mt-6">
-          <Link href="/login" className="text-blue-600 hover:underline font-medium text-sm">Back to Login</Link>
-        </div>
       </div>
     </div>
   )
