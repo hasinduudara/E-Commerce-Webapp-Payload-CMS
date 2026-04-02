@@ -148,7 +148,7 @@ npm run dev
 
 **M. Hasindu Udara**
 
-🎓 Software Engineering Student at IJSE
+🧑‍💻 Trainee Associate Software Engineer at Sentura Technologies!
 
 [![Email](https://img.shields.io/badge/Email-hasiduudara%40gmail.com-D14836?style=flat&logo=gmail&logoColor=white)](mailto:hasiduudara@gmail.com)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-hasindu--udara-0A66C2?style=flat&logo=linkedin&logoColor=white)](https://linkedin.com/in/hasindu-udara)
